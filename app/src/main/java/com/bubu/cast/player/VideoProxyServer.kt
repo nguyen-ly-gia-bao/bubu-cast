@@ -308,13 +308,10 @@ class VideoProxyServer(private val context: Context) {
         return when {
             url.startsWith("http://") || url.startsWith("https://") -> url
             url.startsWith("/") -> {
-                val domain = playlistUrl.substringBefore("/", playlistUrl.indexOf("://") + 3)
-                    .let {
-                        // Lấy scheme://host
-                        val schemeEnd = playlistUrl.indexOf("://") + 3
-                        val hostEnd = playlistUrl.indexOf("/", schemeEnd)
-                        if (hostEnd > 0) playlistUrl.substring(0, hostEnd) else playlistUrl
-                    }
+                // Lấy scheme://host từ playlistUrl
+                val schemeEnd = playlistUrl.indexOf("://") + 3
+                val hostEnd = playlistUrl.indexOf("/", schemeEnd)
+                val domain = if (hostEnd > 0) playlistUrl.substring(0, hostEnd) else playlistUrl
                 domain + url
             }
             else -> baseUrl + url
