@@ -254,9 +254,16 @@ class CastViewModel(app: Application) : AndroidViewModel(app) {
     /** Đồng bộ trạng thái route từ DataStore khi khởi động */
     fun syncRouteSetting(appSettings: com.bubu.cast.data.AppSettings) {
         viewModelScope.launch {
-            val enabled = appSettings.routeThroughPhone.first()
-            _routeThroughPhone.value = enabled
-            if (enabled) proxyServer.start()
+            try {
+                val enabled = appSettings.routeThroughPhone.first()
+                _routeThroughPhone.value = enabled
+                if (enabled) {
+                    try { proxyServer.start() } catch (_: Exception) { }
+                }
+            } catch (_: Exception) {
+                // DataStore lỗi (vd: data cũ hỏng) -> dùng mặc định, không crash
+                _routeThroughPhone.value = false
+            }
         }
     }
 
