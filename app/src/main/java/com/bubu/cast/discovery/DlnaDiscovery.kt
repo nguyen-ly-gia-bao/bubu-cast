@@ -32,23 +32,29 @@ class DlnaDiscovery(private val context: Context) : DeviceDiscovery {
     private val _isScanning = MutableStateFlow(false)
     override val isScanning: StateFlow<Boolean> = _isScanning.asStateFlow()
 
-    override fun startScan() {
+    override suspend fun startScan() {
         if (_isScanning.value) return
         _isScanning.value = true
-        scope.launch {
-            try {
-                val found = ssdpSearch()
-                _devices.value = found
-            } catch (_: Exception) {
-            } finally {
-                _isScanning.value = false
-            }
+        try {
+            val found = ssdpSearch()
+            _devices.value = found
+        } catch (_: Exception) {
+        } finally {
+            _isScanning.value = false
         }
     }
 
     override fun stopScan() {
         _isScanning.value = false
     }
+
+    /**
+     * Tạo controller cho thiết bị DLNA.
+     * Hiện tại chỉ discovery qua SSDP (chưa có điều khiển AVTransport vì
+     * đã bỏ thư viện Cling). Trả về null — ViewModel sẽ báo không kết nối được.
+     * Người dùng dùng Web Receiver để cast tới TV thay thế.
+     */
+    fun createController(device: Device): DeviceController? = null
 
     override fun release() {
         scope.cancel()
