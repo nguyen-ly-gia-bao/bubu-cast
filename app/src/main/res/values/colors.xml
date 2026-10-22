@@ -18,4 +18,5 @@
     <color name="success">#69F0AE</color>
     <color name="error">#FF5252</color>
     <color name="warning">#FFD740</color>
+    <color name="ic_launcher_background">#0F1419</color>
 </resources>
