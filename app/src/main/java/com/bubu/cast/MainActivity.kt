@@ -6,10 +6,12 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.sp
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.room.Room
@@ -52,8 +54,18 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        // Kiểm tra crash từ lần chạy trước
+        val lastCrash = try {
+            getSharedPreferences("bubu_crash", MODE_PRIVATE).getString("last_crash", null)
+        } catch (_: Exception) { null }
+
         setContent {
             val darkTheme by appSettings.darkTheme.collectAsState(initial = true)
+
+            // Hiện dialog crash nếu có
+            var showCrash by androidx.compose.runtime.remember {
+                androidx.compose.runtime.mutableStateOf(lastCrash)
+            }
 
             // Giữ màn hình sáng khi đang kết nối cast
             val connection by castViewModel.connection.collectAsState()
@@ -72,6 +84,35 @@ class MainActivity : ComponentActivity() {
                         viewModel = castViewModel,
                         appSettings = appSettings,
                         database = database
+                    )
+                }
+
+                // Dialog hiện lỗi crash để user chụp màn hình
+                showCrash?.let { crash ->
+                    androidx.compose.material3.AlertDialog(
+                        onDismissRequest = {
+                            showCrash = null
+                            getSharedPreferences("bubu_crash", MODE_PRIVATE).edit().remove("last_crash").apply()
+                        },
+                        title = { androidx.compose.material3.Text("⚠️ App bị crash") },
+                        text = {
+                            androidx.compose.foundation.layout.Column {
+                                androidx.compose.material3.Text("Chụp màn hình này gửi cho Nova:")
+                                androidx.compose.foundation.rememberScrollState().let { scroll ->
+                                    androidx.compose.material3.Text(
+                                        text = crash,
+                                        fontSize = 10.sp,
+                                        modifier = Modifier.verticalScroll(scroll)
+                                    )
+                                }
+                            }
+                        },
+                        confirmButton = {
+                            androidx.compose.material3.TextButton(onClick = {
+                                showCrash = null
+                                getSharedPreferences("bubu_crash", MODE_PRIVATE).edit().remove("last_crash").apply()
+                            }) { androidx.compose.material3.Text("Đóng") }
+                        }
                     )
                 }
             }
