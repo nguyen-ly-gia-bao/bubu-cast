@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Nền tối xanh đen -->
+    <color name="bg_deep">#0A0E14</color>
+    <color name="bg_card">#131A24</color>
+    <color name="bg_card_light">#1B2432</color>
+
+    <!-- Điểm nhấn tím neon -->
+    <color name="neon_purple">#B388FF</color>
+    <color name="neon_purple_dark">#7C4DFF</color>
+    <color name="neon_cyan">#64FFDA</color>
+
+    <!-- Chữ -->
+    <color name="text_primary">#ECEFF1</color>
+    <color name="text_secondary">#90A4AE</color>
+
+    <!-- Trạng thái -->
+    <color name="success">#69F0AE</color>
+    <color name="error">#FF5252</color>
+    <color name="warning">#FFD740</color>
+</resources>
