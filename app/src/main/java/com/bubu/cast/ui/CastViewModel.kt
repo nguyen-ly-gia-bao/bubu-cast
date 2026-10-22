@@ -53,6 +53,11 @@ class CastViewModel(app: Application) : AndroidViewModel(app) {
     var controller: DeviceController? = null
         private set
 
+    /** Các giao thức được bật để quét (mặc định quét cả 3) — khai báo TRƯỚC allDevices */
+    private val _enabledProtocols =
+        MutableStateFlow(setOf(DeviceType.DLNA, DeviceType.CAST, DeviceType.WEB))
+    val enabledProtocols: StateFlow<Set<DeviceType>> = _enabledProtocols.asStateFlow()
+
     /** Danh sách thiết bị gộp từ các nguồn đang bật */
     val allDevices: StateFlow<List<Device>> = combine(
         dlnaDiscovery.devices,
@@ -76,11 +81,6 @@ class CastViewModel(app: Application) : AndroidViewModel(app) {
     val isScanningAny: StateFlow<Boolean> = _isScanningAny.asStateFlow()
 
     private var scanJob: Job? = null
-
-    /** Các giao thức được bật để quét (mặc định quét cả 3) */
-    private val _enabledProtocols =
-        MutableStateFlow(setOf(DeviceType.DLNA, DeviceType.CAST, DeviceType.WEB))
-    val enabledProtocols: StateFlow<Set<DeviceType>> = _enabledProtocols.asStateFlow()
 
     fun setProtocolsEnabled(protocols: Set<DeviceType>) {
         _enabledProtocols.value = protocols.ifEmpty { setOf(DeviceType.WEB) }
