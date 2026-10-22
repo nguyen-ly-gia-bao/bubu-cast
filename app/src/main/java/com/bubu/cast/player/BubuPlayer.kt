@@ -15,6 +15,7 @@ import androidx.media3.exoplayer.DefaultLoadControl
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.exoplayer.source.DefaultMediaSourceFactory
 import androidx.media3.exoplayer.trackselection.DefaultTrackSelector
+import androidx.media3.exoplayer.trackselection.TrackSelectionOverride
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -228,9 +229,9 @@ class BubuPlayer(context: Context) {
             val group = _player.currentTracks.groups
                 .getOrNull(option.trackGroupIndex) ?: return
             params.setOverrideForType(
-                androidx.media3.exoplayer.trackselection.TrackSelectionOverride(
+                TrackSelectionOverride(
                     group.mediaTrackGroup,
-                    option.trackIndex
+                    listOf(option.trackIndex)
                 )
             )
         }
