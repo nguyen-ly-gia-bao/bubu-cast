@@ -1,0 +1,30 @@
+! Bubu Cast — AdBlock rules (định dạng rút gọn của EasyList)
+! Thay file này bằng EasyList đầy đủ để chặn mạnh hơn:
+! https://easylist.to/easylist/easylist.txt (chỉ lấy các dòng ||...^ và ##...)
+!
+! --- Chặn domain quảng cáo ---
+||doubleclick.net^
+||googlesyndication.com^
+||googleadservices.com^
+||adservice.google.com^
+||pagead2.googlesyndication.com^
+||ads.yahoo.com^
+||ads.tiktok.com^
+||analytics.tiktok.com^
+||ads.facebook.com^
+||connect.facebook.net^
+||ads.youtube.com^
+||static.ads-twitter.com^
+! --- Ngoại lệ (không chặn) ---
+@@||google.com^
+@@||youtube.com^
+! --- CSS ẩn banner chung ---
+##.ad-banner
+##.adsbygoogle
+##[id^='div-gpt-ad']
+##.popup-ad
+##.advertisement
+##[class*='sponsored']
+! --- CSS theo domain ---
+ghienphimz.life##.qc-banner
+ghienphimz.life##.popup-overlay
