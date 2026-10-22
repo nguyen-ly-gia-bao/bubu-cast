@@ -10,6 +10,7 @@ import com.google.android.gms.cast.framework.CastSession
 import com.google.android.gms.cast.framework.Session
 import com.google.android.gms.cast.framework.SessionManagerListener
 import com.google.android.gms.cast.framework.media.RemoteMediaClient
+import com.google.android.gms.cast.MediaStatus
 import com.google.android.gms.common.ConnectionResult
 import com.google.android.gms.common.GoogleApiAvailability
 import kotlinx.coroutines.CoroutineScope
@@ -254,13 +255,13 @@ class CastController(
     override suspend fun getState(): PlaybackState {
         return try {
             when (remoteClient()?.playerState) {
-                RemoteMediaClient.PLAYER_STATE_PLAYING ->
+                MediaStatus.PLAYER_STATE_PLAYING ->
                     PlaybackState.PLAYING
-                RemoteMediaClient.PLAYER_STATE_PAUSED ->
+                MediaStatus.PLAYER_STATE_PAUSED ->
                     PlaybackState.PAUSED
-                RemoteMediaClient.PLAYER_STATE_BUFFERING ->
+                MediaStatus.PLAYER_STATE_BUFFERING ->
                     PlaybackState.BUFFERING
-                RemoteMediaClient.PLAYER_STATE_IDLE ->
+                MediaStatus.PLAYER_STATE_IDLE ->
                     PlaybackState.IDLE
                 else -> PlaybackState.IDLE
             }
