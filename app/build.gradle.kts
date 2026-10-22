@@ -91,8 +91,7 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.8.1")
 
     // DLNA/UPnP — Cling (tìm MediaRenderer trong LAN)
-    implementation("org.fourthline.cling:cling-core:2.1.1")
-    implementation("org.fourthline.cling:cling-support:2.1.1")
+    // DLNA via Cling removed (not on Maven Central) - using SSDP manual discovery instead
 
     // Google Cast SDK (tùy chọn — wrap try-catch nếu thiếu GMS)
     implementation("com.google.android.gms:play-services-cast-framework:21.4.0")
