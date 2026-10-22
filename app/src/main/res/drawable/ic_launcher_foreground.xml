@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <!-- Neon purple play button on dark background -->
+    <path
+        android:fillColor="#9D4EDD"
+        android:pathData="M54,30 L78,54 L54,78 Z"/>
+    <path
+        android:fillColor="#9D4EDD"
+        android:fillAlpha="0.3"
+        android:pathData="M30,30 h48 v48 h-48 Z M54,30 L78,54 L54,78 Z"/>
+</vector>
