@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Bubu Cast</string>
+
+    <!-- Tabs -->
+    <string name="tab_browser">Trình duyệt</string>
+    <string name="tab_video">Video</string>
+    <string name="tab_playlist">Playlist</string>
+    <string name="tab_history">Lịch sử</string>
+    <string name="tab_bookmark">Dấu trang</string>
+    <string name="tab_settings">Cài đặt</string>
+
+    <!-- Chung -->
+    <string name="find_devices">Tìm thiết bị</string>
+    <string name="scanning">Đang quét…</string>
+    <string name="no_devices">Không tìm thấy thiết bị nào</string>
+    <string name="connected">Đã kết nối</string>
+    <string name="not_connected">Chưa kết nối</string>
+    <string name="disconnect">Ngắt kết nối</string>
+    <string name="cast">Chiếu</string>
+    <string name="close">Đóng</string>
+    <string name="cancel">Hủy</string>
+    <string name="save">Lưu</string>
+    <string name="delete">Xóa</string>
+    <string name="retry">Thử lại</string>
+
+    <!-- Trình duyệt -->
+    <string name="address_hint">Nhập địa chỉ web hoặc từ khóa…</string>
+    <string name="videos_found">Video tìm thấy</string>
+    <string name="no_videos">Chưa phát hiện video nào trên trang này</string>
+    <string name="adblock_on">Chặn QC: BẬT</string>
+    <string name="adblock_off">Chặn QC: TẮT</string>
+    <string name="blocked_count">%1$d đã chặn</string>
+
+    <!-- Thiết bị -->
+    <string name="device_dlna">DLNA / UPnP</string>
+    <string name="device_cast">Google Cast</string>
+    <string name="device_web">Web Receiver</string>
+
+    <!-- Cài đặt -->
+    <string name="setting_adblock">Chặn quảng cáo</string>
+    <string name="setting_homepage">Trang chủ</string>
+    <string name="setting_theme">Chế độ tối</string>
+    <string name="setting_clear_history">Xóa lịch sử duyệt web</string>
+    <string name="setting_clear_data">Xóa toàn bộ dữ liệu</string>
+    <string name="setting_version">Phiên bản</string>
+</resources>
