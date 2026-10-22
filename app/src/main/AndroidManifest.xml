@@ -34,8 +34,12 @@
             </intent-filter>
         </activity>
 
-        <!-- Cling UPnP service cho DLNA discovery -->
-        <service android:name="org.fourthline.cling.android.AndroidUpnpServiceImpl" />
+        <!-- DLNA discovery: dùng SSDP thuần túy, không cần service ngoài -->
+
+        <!-- Google Cast: OptionsProvider BẮT BUỘC (không có -> crash khi gọi CastContext) -->
+        <meta-data
+            android:name="com.google.android.gms.cast.framework.OPTIONS_PROVIDER_CLASS_NAME"
+            android:value="com.bubu.cast.CastOptionsProvider" />
 
         <!-- Google Cast: receiver app id mặc định (Default Media Receiver) -->
         <meta-data
