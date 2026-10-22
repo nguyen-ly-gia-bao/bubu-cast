@@ -7,7 +7,9 @@ import com.google.android.gms.cast.MediaLoadRequestData
 import com.google.android.gms.cast.MediaMetadata
 import com.google.android.gms.cast.framework.CastContext
 import com.google.android.gms.cast.framework.CastSession
+import com.google.android.gms.cast.framework.Session
 import com.google.android.gms.cast.framework.SessionManagerListener
+import com.google.android.gms.cast.framework.media.RemoteMediaClient
 import com.google.android.gms.common.ConnectionResult
 import com.google.android.gms.common.GoogleApiAvailability
 import kotlinx.coroutines.CoroutineScope
@@ -52,7 +54,7 @@ class CastDiscovery(private val context: Context) : DeviceDiscovery {
     }
 
     private var castContext: CastContext? = null
-    private var sessionListener: SessionManagerListener<CastSession>? = null
+    private var sessionListener: SessionManagerListener<Session>? = null
 
     /** Session Cast đang hoạt động (nếu có) */
     var currentSession: CastSession? = null
@@ -71,30 +73,34 @@ class CastDiscovery(private val context: Context) : DeviceDiscovery {
             castContext = cc
 
             // Lắng nghe session để biết khi nào kết nối tới thiết bị
-            val listener = object : SessionManagerListener<CastSession> {
-                override fun onSessionStarted(session: CastSession, sessionId: String) {
-                    currentSession = session
-                    onSessionDevice(session)
+            val listener = object : SessionManagerListener<Session> {
+                override fun onSessionStarted(session: Session, sessionId: String) {
+                    (session as? CastSession)?.let {
+                        currentSession = it
+                        onSessionDevice(it)
+                    }
                 }
 
-                override fun onSessionResumed(session: CastSession, wasSuspended: Boolean) {
-                    currentSession = session
-                    onSessionDevice(session)
+                override fun onSessionResumed(session: Session, wasSuspended: Boolean) {
+                    (session as? CastSession)?.let {
+                        currentSession = it
+                        onSessionDevice(it)
+                    }
                 }
 
-                override fun onSessionEnded(session: CastSession, error: Int) {
+                override fun onSessionEnded(session: Session, error: Int) {
                     if (currentSession == session) {
                         currentSession = null
                         scope.launch { _devices.value = emptyList() }
                     }
                 }
 
-                override fun onSessionStarting(session: CastSession) = Unit
-                override fun onSessionStartFailed(session: CastSession, error: Int) = Unit
-                override fun onSessionResuming(session: CastSession, sessionId: String) = Unit
-                override fun onSessionResumeFailed(session: CastSession, error: Int) = Unit
-                override fun onSessionSuspended(session: CastSession, reason: Int) = Unit
-                override fun onSessionEnding(session: CastSession) = Unit
+                override fun onSessionStarting(session: Session) = Unit
+                override fun onSessionStartFailed(session: Session, error: Int) = Unit
+                override fun onSessionResuming(session: Session, sessionId: String) = Unit
+                override fun onSessionResumeFailed(session: Session, error: Int) = Unit
+                override fun onSessionSuspended(session: Session, reason: Int) = Unit
+                override fun onSessionEnding(session: Session) = Unit
             }
             sessionListener?.let { cc.sessionManager.removeSessionManagerListener(it) }
             sessionListener = listener
@@ -156,14 +162,19 @@ class CastDiscovery(private val context: Context) : DeviceDiscovery {
     fun createController(): CastController? {
         val session = currentSession ?: return null
         val device = _devices.value.firstOrNull() ?: return null
-        return CastController(device, session)
+        return CastController(device, session) {
+            try {
+                castContext?.sessionManager?.endCurrentSession(true)
+            } catch (_: Exception) { }
+        }
     }
 }
 
 /** Điều khiển phát qua Google Cast RemoteMediaClient */
 class CastController(
     override val device: Device,
-    private val session: CastSession
+    private val session: CastSession,
+    private val onDisconnect: () -> Unit = {}
 ) : DeviceController {
 
     private fun remoteClient() = session.remoteMediaClient
@@ -243,13 +254,13 @@ class CastController(
     override suspend fun getState(): PlaybackState {
         return try {
             when (remoteClient()?.playerState) {
-                com.google.android.gms.cast.framework.media.RemoteMediaClient.PLAYER_STATE_PLAYING ->
+                RemoteMediaClient.PLAYER_STATE_PLAYING ->
                     PlaybackState.PLAYING
-                com.google.android.gms.cast.framework.media.RemoteMediaClient.PLAYER_STATE_PAUSED ->
+                RemoteMediaClient.PLAYER_STATE_PAUSED ->
                     PlaybackState.PAUSED
-                com.google.android.gms.cast.framework.media.RemoteMediaClient.PLAYER_STATE_BUFFERING ->
+                RemoteMediaClient.PLAYER_STATE_BUFFERING ->
                     PlaybackState.BUFFERING
-                com.google.android.gms.cast.framework.media.RemoteMediaClient.PLAYER_STATE_IDLE ->
+                RemoteMediaClient.PLAYER_STATE_IDLE ->
                     PlaybackState.IDLE
                 else -> PlaybackState.IDLE
             }
@@ -260,7 +271,7 @@ class CastController(
 
     override fun disconnect() {
         try {
-            session.sessionManager.endCurrentSession(true)
+            onDisconnect()
         } catch (_: Exception) { }
     }
 
